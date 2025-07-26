@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h1, h2, h3, p {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+<body class="bg-light">
+    <div class="container mt-5 text-center">
+        <div class="alert alert-success shadow">
+            <h4 class="mb-3">Payment Successful!</h4>
+            <p>Your dummy payment via Razorpay was completed.</p>
+            <p>Thank you for your amount!</p>
+            <a href="{{ url_for('sponsor_accessories') }}" class="btn btn mt-3" style="background:#008000; color:white">Back to Accessories List</a>
+        </div>
+    </div>
+</body>
+</html>

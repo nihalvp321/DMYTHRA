@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motivation Classes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='usermotivation.css') }}">
+    <script defer src="{{ url_for('static', filename='usermotivation.js') }}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+    <a href="{{ url_for('userhome') }}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+    <div class="logo">
+      <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+    </div></nav>
+    <div class="container">
+        <h2>Available Motivation Classes</h2>
+    
+        {% for class in motivation_classes %}
+        <div class="class-card">
+            <!-- Corrected Image Display -->
+            <img src="{{ url_for('static', filename='uploads/' + class[4]) }}" alt="Teacher Image">
+    
+            <h3>{{ class[1] }}</h3> <!-- Teacher Name -->
+            <p><strong>Venue:</strong> {{ class[2] }}</p> <!-- Correct Venue -->
+            <p><strong>Time:</strong> {{ class[3] }}</p> <!-- Correct Time -->
+    
+            <h4>Available Seats</h4>
+            <div class="seats-container">
+                {% if class[0] in available_seats and available_seats[class[0]] %}
+                    {% for seat in available_seats[class[0]] %}
+                        <button class="seat available" onclick="openBookingForm('{{ class[0] }}', '{{ seat[0] }}')">
+                            {{ seat[0] }}
+                        </button>
+                    {% endfor %}
+                {% else %}
+                    <p>No available seats</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    
+    
+    <!-- Booking Form (Hidden) -->
+    <div id="booking-form" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingForm()">&times;</span>
+            <h3>Book Your Seat</h3>
+            <form id="seat-booking-form" method="POST">
+                <input type="hidden" id="class_id" name="class_id">
+                <input type="hidden" id="seat_number" name="seat_number">
+                
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+    
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+    
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" required>
+    
+                <button type="submit">Book Seat</button>
+            </form>
+        </div>
+    </div>
+    
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booked Seats - Motivation Class</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_book_seats.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('admin_motivation_class') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+    
+        <div class="logo">
+            <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+        </div>
+    
+        <a href="{{ url_for('admin_logout') }}" class="logout-btn">Logout</a>
+    </nav><br><br>
+
+    <div class="container">
+        <h2>Motivation Class Seat Booking</h2>
+        
+        <!-- Theater Screen -->
+        <div class="screen">SCREEN</div>
+
+        <!-- Seats Grid -->
+        <div class="seats-container">
+            {% for seat in all_seats %}
+                {% set seat_num = seat[0] %}  <!-- Seat number from tuple -->
+                
+                {% if seat_num in booked_seats %}
+                    {% set seat_data = booked_seats[seat_num] %}
+                    <div class="seat booked" title="Booked by: {{ seat_data[0] }} ({{ seat_data[1] }} years) 📞 {{ seat_data[2] }}">
+                        {{ seat_num }}
+                    </div>
+                {% else %}
+                    <div class="seat available">{{ seat_num }}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div><span class="seat available"></span> Available</div>
+            <div><span class="seat booked"></span> Booked</div>
+        </div>
+
+        <!-- Booked Seats Table -->
+        <div class="booked-seats-table">
+            <h3>Booked Seats Details</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Seat No.</th>
+                        <th>Name</th>
+                        <th>Age</th>
+                        <th>Phone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seat_num, seat_data in booked_seats.items() %}
+                        <tr>
+                            <td>{{ seat_num }}</td>
+                            <td>{{ seat_data[0] }}</td>
+                            <td>{{ seat_data[1] }}</td>
+                            <td>{{ seat_data[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</body>
+</html>

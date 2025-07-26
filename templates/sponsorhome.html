@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sponsor Home - Dmythra</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='sponsorhome.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='DM.png') }}" alt="Logo">
+      <span>Dmythra</span>
+    </div>
+    <nav>
+      <a href="/logout" class="logout">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="overlay">
+        <section id="functions" class="features-section">
+            <div class="feature-card">
+              <h3>View User Posts</h3>
+              <p>Explore user skills via shared posts, photos, and videos.</p>
+              <a href="/sponsorskills" class="view-btn">View Posts</a>
+            </div>
+        
+            <div class="feature-card">
+              <h3>View Accessories</h3>
+              <p>Check out what users need — medicines, tools, and materials.</p>
+              <a href="{{ url_for('sponsor_accessories') }}" class="view-btn">View Accessories</a>
+            </div>
+          </section>
+    </div>
+    <div class="custom-shape-divider-bottom"></div>
+  </section>
+  
+
+</body>
+</html>

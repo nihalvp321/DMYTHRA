@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Accessory Payments</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    h1, h2, h3, p {
+        font-family: 'Poppins', sans-serif;
+    }
+    body {
+      background-color: #f8f9fa;
+    }
+    .navbar {
+        background-color: #008000;
+        padding: 15px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        position: relative;
+    }
+
+    .back-button {
+        background-color: green;
+        padding: 10px 15px;
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .back-button:hover {
+        background-color: darkgreen;
+    }
+
+    .logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .logo img {
+        width: 80px;
+        height: auto;
+    }
+
+    .table-container {
+      margin-top: 40px;
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="{{ url_for('admin_dashboard') }}" class="back-button">
+    <i class="fas fa-arrow-left"></i> Back
+  </a>
+  <div class="logo">
+    <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+  </div>
+</nav>
+
+<div class="container table-container">
+  {% if payments %}
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle">
+      <thead class="table-success">
+        <tr>
+          <th>#</th>
+          <th>Profile</th>
+          <th>Username</th>
+          <th>User Phone</th>
+          <th>User Email</th>
+          <th>Category</th>
+          <th>Description</th>
+          <th>Sponsor Name</th>
+          <th>Amount</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pay in payments %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>
+            <img src="{{ url_for('static', filename='uploads/' + pay['profile_image']) if pay['profile_image'] != 'noprofile.png' else url_for('static', filename='noprofile.png') }}" 
+                 class="rounded-circle" width="40" height="40" alt="Profile">
+          </td>
+          <td>{{ pay['username'] }}</td>
+          <td>{{ pay['user_phone'] }}</td>
+          <td>{{ pay['user_email'] }}</td>
+          <td>{{ pay['category'] }}</td>
+          <td>{{ pay['description'] }}</td>
+          <td>{{ pay['sponsor_name'] }}</td>
+          <td>{{ pay['amount'] }}</td>
+          <td>
+            {% if pay['payment_status'] == 'done' %}
+              <div class="text-success fw-bold text-center mt-2">Payment Done</div>
+            {% else %}
+              <form action="{{ url_for('mark_payment', payment_id=pay['id']) }}" method="POST" onsubmit="event.preventDefault(); showPaymentModal(this, '{{ pay['username'] }}', '{{ pay['amount'] }}');">
+                <button type="submit" class="btn btn-success btn-sm w-100">Pay</button>
+              </form>
+            {% endif %}
+          </td>          
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p class="text-center text-muted">No payments available.</p>
+  {% endif %}
+</div>
+  
+  <!-- ✅ Payment Success Modal -->
+  <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title w-100" id="paymentModalLabel">Payment Successful</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div style="font-size: 50px;">✅</div>
+          <p class="mt-3">You have successfully sponsored <strong id="modalUsername"></strong> with an amount of <strong>₹<span id="modalAmount"></span></strong>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <script>
+    let currentForm = null;
+  
+    function showPaymentModal(form, username, amount) {
+      currentForm = form;
+      const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+      document.getElementById('modalUsername').textContent = username;
+      document.getElementById('modalAmount').textContent = amount;
+      modal.show();
+  
+      const modalElement = document.getElementById('paymentModal');
+      modalElement.addEventListener('hidden.bs.modal', function () {
+        if (currentForm) {
+          currentForm.submit();
+          currentForm = null;
+        }
+      }, { once: true }); // Listen only once per modal open
+    }
+  </script>
+  
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Upload</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='user_skills.css') }}" />
+  <script defer src="{{ url_for('static', filename='user_skills.js') }}"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{{ url_for('userhome') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <div class="logo">
+          <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+        </div></nav>
+
+  <div class="container">
+    <h2>Upload Your Skill</h2>
+
+    <!-- Upload Form -->
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+      <input type="file" name="media" required />
+      <textarea name="caption" placeholder="Write a caption..." required></textarea>
+      <button type="submit">Upload</button>
+    </form>
+
+    <hr />
+
+    <!-- Display Posts -->
+    <div class="posts">
+      {% for post in posts %}
+      <div class="post-card">
+        <!-- Profile Info -->
+        <div class="post-header">
+          <img 
+            src="{{ url_for('static', filename='uploads/' + post['profile_image']) if post['profile_image'] != 'noprofile.png' else url_for('static', filename='noprofile.png') }}?t={{ current_time }}" 
+            alt="Profile" 
+            class="profile-pic"
+          />
+          <span>{{ post['username'] }}</span>
+        </div>
+
+        <!-- Media (Image or Video) -->
+        {% if post['media'].endswith(('.mp4', '.avi', '.mov')) %}
+        <video src="{{ url_for('static', filename='uploads/' + post['media']) }}" controls class="post-media"></video>
+        {% else %}
+        <img src="{{ url_for('static', filename='uploads/' + post['media']) }}" class="post-media" />
+        {% endif %}
+
+        <!-- Caption & Likes -->
+        <p class="caption">{{ post['caption'] }}</p>
+        
+        <!-- Update/Delete Buttons -->
+        <div class="post-actions">
+            <!-- Update button opens modal -->
+            <button type="button" class="action-btn update"
+                    onclick="openUpdateModal('{{ post.id }}', `{{ post.caption | e }}`)">
+              Update
+            </button>
+          
+            <!-- Delete button uses POST -->
+            <form action="{{ url_for('delete_post', post_id=post['id']) }}" method="POST" style="display:inline;"
+                  onsubmit="return confirm('Are you sure you want to delete this post?');">
+              <button type="button" class="action-btn delete" onclick="confirmDelete()">Delete</button>
+            </form>
+          </div>          
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Update Caption Modal -->
+<div id="updateModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Update Caption</h3>
+      <form id="updateForm" method="POST" action="{{ url_for('update_post') }}">
+        <input type="hidden" name="post_id" id="modalPostId" />
+        <textarea name="caption" id="modalCaption" rows="4" style="width: 100%;" required></textarea>
+        <br /><br />
+        <button type="submit">Save</button>
+      </form>
+    </div>
+  </div>
+  <script>
+  function confirmDelete() {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This action cannot be undone!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e3342f',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, delete it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Find and submit the closest form
+        document.querySelector('.action-btn.delete').closest('form').submit();
+      }
+    });
+  }
+</script>
+
+  
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_motivation.css') }}">
+    <!-- Include Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('admin_dashboard') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+
+        <div class="logo">
+            <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+        </div>
+    </nav>
+
+    <section class="container">
+        <h2>Add Motivation Class</h2>
+        <form action="/admin/add_motivation_class" method="post" enctype="multipart/form-data">
+            <label>Teacher Name:</label>
+            <input type="text" name="teacher_name" required>
+
+            <label>Venue:</label>
+            <input type="text" name="venue" required>
+
+            <label>Time:</label>
+            <input type="text" name="time" required>
+
+            <label>Teacher Photo:</label>
+            <input type="file" name="teacher_photo" required>
+
+            <button type="submit">Add Class</button>
+        </form>
+    </section>
+
+    <section class="container">
+        <h2>Existing Classes</h2>
+        <table>
+            <tr>
+                <th>Teacher</th>
+                <th>Venue</th>
+                <th>Time</th>
+                <th>Photo</th>
+                <th>Actions</th>
+            </tr>
+            {% for class in motivation_classes %}
+<tr>
+    <td>{{ class[1] }}</td> <!-- Teacher Name -->
+    <td>{{ class[2] }}</td> <!-- Venue -->
+    <td>{{ class[3] }}</td> <!-- Time -->
+    <td><img src="{{ url_for('static', filename='uploads/' + class[4]) }}" width="50"></td> <!-- Corrected Teacher Image -->
+
+    <td>
+        <!-- Update Button -->
+        <button onclick="openUpdateForm('{{ class[0] }}', '{{ class[1] }}', '{{ class[2] }}', '{{ class[3] }}')">
+            Update
+        </button>
+
+        <!-- Delete Form -->
+        <form action="{{ url_for('delete_motivation_class', class_id=class[0]) }}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Are you sure you want to delete this class?');">
+                Delete
+            </button>
+        </form>
+    </td>
+</tr>
+{% endfor %}
+
+        </table>
+    </section>
+
+    <!-- Update Form Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUpdateForm()">&times;</span>
+            <h2>Update Motivation Class</h2>
+            <form id="updateForm" action="" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="class_id" id="update_class_id">
+                <label>Teacher Name:</label>
+                <input type="text" name="teacher_name" id="update_teacher_name" required>
+                <label>Venue:</label>
+                <input type="text" name="venue" id="update_venue" required>
+                <label>Time:</label>
+                <input type="text" name="time" id="update_time" required>
+                <label>Teacher Photo (Optional):</label>
+                <input type="file" name="teacher_photo">
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript for Update Form -->
+    <script>
+    function openUpdateForm(class_id, teacher_name, venue, time) {
+        document.getElementById("update_class_id").value = class_id;
+        document.getElementById("update_teacher_name").value = teacher_name;
+        document.getElementById("update_venue").value = venue;
+        document.getElementById("update_time").value = time;
+        document.getElementById("updateForm").action = "/admin/update_motivation_class/" + class_id;
+        document.getElementById("updateModal").style.display = "block";
+    }
+
+    function closeUpdateForm() {
+        document.getElementById("updateModal").style.display = "none";
+    }
+
+    // Close modal when clicking outside the form
+    window.onclick = function(event) {
+        var modal = document.getElementById("updateModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    </script>
+
+    <section class="container">
+        <h2>Manage Seats for Classes</h2>
+        <table>
+            <tr>
+                <th>Teacher</th>
+                <th>Venue</th>
+                <th>Time</th>
+                <th>Seats</th>
+                <th>Actions</th>
+            </tr>
+            {% for class in motivation_classes %}
+            <tr>
+                <td>{{ class[1] }}</td> <!-- Teacher Name -->
+                <td>{{ class[2] }}</td> <!-- Venue -->
+                <td>{{ class[3] }}</td> <!-- Time -->
+                <td>
+                    <!-- Add Seat Form -->
+                    <form action="{{ url_for('add_seat', class_id=class[0]) }}" method="post">
+                        <label for="seat_number_{{ class[0] }}">Seat Number:</label>
+                        <input type="text" id="seat_number_{{ class[0] }}" name="seat_number" required>
+                        <button type="submit">Add Seat</button>
+                    </form>
+                </td>
+                <td>
+                    <!-- View Booked Seats -->
+                    <a href="{{ url_for('booked_seats', class_id=class[0]) }}">
+                        <button>View Booked Seats</button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+</body>
+</html>

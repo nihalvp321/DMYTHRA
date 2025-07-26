@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Accessory Requests</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+  }
+  
+  h1, h2, h3, p {
+      font-family: 'Poppins', sans-serif;
+  }
+    body {
+      background-color: #f8f9fa;
+    }
+    .navbar {
+        background-color: #008000; /* Green Theme */
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: white;
+        position: relative;
+    }
+    
+    /* Back Button - Left */
+    .back-button {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        background-color: green;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    
+    .back-button i {
+        margin-right: 5px;
+    }
+    
+    .back-button:hover {
+        background-color: darkgreen;
+    }
+    
+    /* Center Logo */
+    .logo {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .logo img {
+        width: 80px;
+        height: auto;
+    }
+
+    .table-container {
+      margin-top: 40px;
+    }
+
+  </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="{{ url_for('sponsor_home') }}" class="back-button">
+            <i class="fas fa-arrow-left"></i> Back
+        </a>
+        <div class="logo">
+          <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+        </div></nav>
+
+  <div class="container table-container">
+    {% if requests %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped align-middle">
+        <thead class="table-success">
+            <tr>
+              <th>#</th>
+              <th>Profile</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Action</th>
+            </tr>
+          </thead>          
+          <tbody>
+            {% for req in requests %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>
+                <img src="{{ url_for('static', filename='uploads/' + req['profile_image']) if req['profile_image'] != 'noprofile.png' else url_for('static', filename='noprofile.png') }}?t={{ current_time }}" 
+       class="rounded-circle" 
+       width="40" 
+       height="40" 
+       alt="Profile">
+              </td>
+              <td>{{ req['category'] }}</td>
+              <td>{{ req['description'] }}</td>
+              <td>{{ req['username'] }}</td>
+              <td>{{ req['email'] }}</td>
+              <td>{{ req['phone'] }}</td>
+              <td>
+                <a href="{{ url_for('sponsor_accessory_amount', request_id=req['id']) }}" class="btn btn- btn-sm" style="background:#008000; color:white;">Sponsor</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>          
+      </table>
+    </div>
+    {% else %}
+    <p class="text-center text-muted">No accessory requests yet.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

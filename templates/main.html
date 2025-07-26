@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dmythra - Differently Abled Helping Website</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("a.scroll-link").forEach(link => {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) target.scrollIntoView({ behavior: "smooth" });
+        });
+      });
+    });
+  </script>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='DM.png') }}" alt="Dmythra Logo">
+        <span class="brand-name">Dmythra</span>
+      </div>
+      <ul class="nav-links">
+        <li><a class="scroll-link" href="#home">Home</a></li>
+        <li><a class="scroll-link" href="#feedback">Feedbacks</a></li>
+        <li><a class="scroll-link" href="#about">About Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="home" class="home-section">
+    <div class="slideshow-container">
+      <div class="slide fade">
+        <img src="{{ url_for('static', filename='uploadskillphoto.jpg') }}" alt="Slide 1">
+        <div class="custom-shape-divider-bottom"></div>
+      </div>
+      <div class="slide fade">
+        <img src="{{ url_for('static', filename='2.jpg') }}" alt="Slide 2">
+        <div class="custom-shape-divider-bottom"></div>
+      </div>
+      <div class="slide fade">
+        <img src="{{ url_for('static', filename='pexels-judita-tamošiūnaitė-20267641.jpg') }}" alt="Slide 3">
+        <div class="custom-shape-divider-bottom"></div>
+      </div>
+  
+      <!-- Slide Buttons -->
+      <div class="slide-buttons">
+        <a href="/userregister" class="selection-button user-btn">Enter as User</a>
+        <a href="/sponsorhome" class="selection-button sponsor-btn">Enter as Sponsor</a>
+      </div>
+    </div>
+  </section>
+  
+  
+
+  <section id="feedback" class="feedback-section">
+    <h2>User Feedbacks</h2>
+    <div class="feedback-container">
+      {% for fb in feedbacks %}
+      <div class="feedback-card">
+        <img src="{{ url_for('static', filename='uploads/' + fb['profile_image']) if fb['profile_image'] != 'noprofile.png' else url_for('static', filename='noprofile.png') }}?t={{ current_time }}" class="profile-img" alt="Profile">
+        <div class="feedback-text">
+          <h5>{{ fb.username }}</h5>
+          <p>{{ fb.feedback }}</p>
+          <div class="stars">
+            {% for i in range(fb.rating) %}★{% endfor %}
+            {% for i in range(5 - fb.rating) %}☆{% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="about" class="about-section">
+    <h2>About Us</h2>
+    <div class="about-scroll-wrapper">
+      <button class="scroll-btn left" onclick="scrollAboutCards('left')">&#10094;</button>
+      <div class="about-cards-container" id="aboutCardsContainer">
+        <div class="about-cards">
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='6152022_general2_13.jpg') }}" class="about-icon" alt="Mission">
+            <h4>Our Mission</h4>
+            <p>Empowering differently-abled individuals through technology and community support.</p>
+          </div>
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='question-mark-icon-solving-problem-solution-concept.jpg') }}" class="about-icon" alt="What We Do">
+            <h4>What We Do</h4>
+            <p>Provide a platform for support, skill sharing, motivation classes, and more.</p>
+          </div>
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='Wavy_Tech-29_Single-12.jpg') }}" class="about-icon" alt="Accessibility">
+            <h4>Accessibility</h4>
+            <p>Creating accessible tools and features tailored to each individual's needs.</p>
+          </div>
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='5484597.jpg') }}" class="about-icon" alt="Skill">
+            <h4>Skill Development</h4>
+            <p>Help users showcase and enhance their talents through visual skill-sharing posts.</p>
+          </div>
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='59275.jpg') }}" class="about-icon" alt="Community">
+            <h4>Community Building</h4>
+            <p>Connect users with sponsors, teachers, and volunteers for holistic support.</p>
+          </div>
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='time-minute-alarm-duration-hour-schedule-concept.jpg') }}" class="about-icon" alt="Monitoring">
+            <h4>Real-time Monitoring</h4>
+            <p>Integrate health monitoring for predictive wellness and safety.</p>
+          </div>
+          <div class="about-card">
+            <img src="{{ url_for('static', filename='20631.jpg') }}" class="about-icon" alt="Growth">
+            <h4>Motivation & Growth</h4>
+            <p>Offer motivational classes and personal development opportunities.</p>
+          </div>
+        </div>
+      </div>
+      <button class="scroll-btn right" onclick="scrollAboutCards('right')">&#10095;</button>
+    </div>
+  </section>
+  
+  
+  <script>
+    let slideIndex = 0;
+    showSlides();
+  
+    function showSlides() {
+      const slides = document.getElementsByClassName("slide");
+      for (let i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+  
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 }
+  
+      slides[slideIndex - 1].style.display = "block";
+      setTimeout(showSlides, 4000); // Change image every 4 seconds
+    }
+  </script>
+  <script>
+    function scrollAboutCards(direction) {
+      const container = document.getElementById('aboutCardsContainer');
+      const scrollAmount = 250;
+      container.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  
+    // Optional: Scroll horizontally using mouse wheel
+    const container = document.getElementById('aboutCardsContainer');
+    container.addEventListener('wheel', (evt) => {
+      evt.preventDefault();
+      container.scrollLeft += evt.deltaY;
+    });
+  </script>
+  
+  
+  
+  
+</body>
+</html>
