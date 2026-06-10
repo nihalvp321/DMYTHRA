@@ -136,7 +136,7 @@ Administrators can:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/dmythra.git
+git clone https://github.com/nihalvp321/DMYTHRA.git
 cd dmythra
 ```
 
